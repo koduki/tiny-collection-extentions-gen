@@ -1,0 +1,146 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package cn.orz.pascal.tce.tiny.collection.extentions;
+
+import java.io.Serializable;
+import java.util.Objects;
+
+/**
+ * Tuple types.
+ *
+ * @author koduki
+ */
+public class Tuple {
+#foreach ($x in $xs)
+
+#set($values = "")
+#foreach($i in [1..$x])
+    #set($values = $values + "_" + $i)
+    #if ($i != $x)
+        #set($values = $values + ", ") 
+    #end
+#end
+
+#set($types = "")
+#foreach($i in [1..$x])
+    #set($types = $types + "T" + $i)
+    #if ($i != $x)
+        #set($types = $types + ", ") 
+    #end
+#end
+
+#set($type_value = "")
+#foreach($i in [1..$x])
+    #set($type_value = $type_value + "T" + $i + " _" + $i)
+    #if ($i != $x)
+        #set($type_value = $type_value + ", ") 
+    #end
+#end
+
+    /**
+     * Create Tuple${x}.
+     *
+#foreach($i in [1..$x])
+     * @param <T${i}> Type ${i} of this Tuple
+#end
+#foreach($i in [1..$x])
+     * @param _${i} Element ${i} of this Tuple
+#end
+     * @return Tuple($values)
+     */
+    public static <${types}> Tuple${x}<${types}> $(${type_value}) {
+        return new Tuple${x}<>(${values});
+    }
+
+    /**
+     * A tuple of ${x} elements.
+     *
+#foreach($i in [1..$x])
+     * @param <T${i}> Type ${i} of this Tuple
+#end
+     */
+    public static class Tuple${x}<${types}> implements Serializable {
+
+#foreach($i in [1..$x])
+        private final T${i} _${i};
+#end
+
+        /**
+         * Create Tuple${x}.
+         *
+#foreach($i in [1..$x])
+     * @param _${i} Element ${i} of this Tuple
+#end
+         */
+        public Tuple${x}(${type_value}) {
+#foreach($i in [1..$x])
+            this._${i} = _${i};
+#end
+        }
+
+#foreach($i in [1..$x])
+        /**
+         * Get element ${i} of this Tuple.
+         *
+         * @return element ${i}
+         */
+        public T${i} _${i}() {
+            return _${i};
+        }
+#end
+
+        @Override
+        public int hashCode() {
+            int hash = 5;
+#foreach($i in [1..$x])
+            hash = 59 * hash + Objects.hashCode(this._${i});
+#end
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+#set($qs = "")
+#foreach($i in [1..$x])
+    #set($qs = $qs + "?")
+    #if ($i != $x)
+        #set($qs = $qs + ", ") 
+    #end
+#end
+
+            final Tuple${x}<${qs}> other = (Tuple${x}<${qs}>) obj;
+#foreach($i in [1..$x])
+            if (!Objects.equals(this._${i}, other._${i})) {
+                return false;
+            }
+#end
+            return true;
+        }
+
+        @Override
+        public String toString() {
+#set($str = "")
+#foreach($i in [1..$x])
+    #set($str = $str +  "_" + $i + "=" + $qot + " + _"+$i )
+    #if ($i != $x)
+        #set($str = $str + " + " + $qot + ", ") 
+    #end
+#end
+            return "Tuple${x}{" + "${str} + "}";
+        }
+    }
+
+#end
+}
